@@ -10,6 +10,26 @@ module "common_nprd" {
   container_registry_devops_service_connection_name = "clusterz-nprd-%s" # formatted with project name
 }
 
+locals {
+  nprd_routes = [
+    {
+      name           = "AzureAD"
+      address_prefix = "AzureActiveDirectory"
+      next_hop_type  = "Internet"
+    },
+    {
+      name           = "AzD"
+      address_prefix = "AzureDevOps"
+      next_hop_type  = "Internet"
+    },
+    {
+      name                   = "Internet"
+      address_prefix         = "0.0.0.0/0"
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = "555.555.555.555" # route through firewall
+    }
+  ]
+}
 module "dev-1" {
   source = "./modules/aks"
   providers = {
@@ -29,6 +49,7 @@ module "dev-1" {
   vnet_subnet_id   = azurerm_subnet.dev-1.id
   vnet_id          = azurerm_virtual_network.k8s-nprd.id
   route_table_name = "my-cluster-dev-1-rt"
+  route_table_routes = local.nprd_routes
   aks_private      = true
 
   argocd_hostname = "argocd.dev.cloud.org.gc.ca"

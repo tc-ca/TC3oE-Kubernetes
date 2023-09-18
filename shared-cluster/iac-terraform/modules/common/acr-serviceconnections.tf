@@ -17,8 +17,8 @@ locals {
 #####
 
 resource "azurerm_role_assignment" "acr_read" {
-  for_each             = local.projects_with_images
-  principal_id         = each.value.security_group_id
+  for_each             = toset([for project in local.projects_with_images : project.security_group_id])
+  principal_id         = each.value
   role_definition_name = "Reader"
   scope                = azurerm_container_registry.main.id
 }

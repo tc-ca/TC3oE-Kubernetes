@@ -15,7 +15,7 @@ if ($cluster -notin 1..$clusters.Count)
 }
 $cluster = $clusters[$cluster-1] # convert from index to value
 
-$workloads = Get-ChildItem -Recurse | Where-Object { ($_.Name -eq "kustomization.yaml") -and (-not ($_.Name -contains "templates")) }
+$workloads = Get-ChildItem -Recurse | Where-Object { ($_.Name -eq "kustomization.yaml") -and (-not ($_.FullName -like "*templates*")) }
 Write-Host "Workloads:" -ForegroundColor Cyan
 $cwd = (Get-Location).Path
 for($i=1; $i -le $workloads.Count; $i++)

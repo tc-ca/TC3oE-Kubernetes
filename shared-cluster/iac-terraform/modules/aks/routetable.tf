@@ -9,27 +9,25 @@ resource "azurerm_route_table" "main" {
   tags                = data.azurerm_resource_group.main.tags
   name                = var.route_table_name
   location            = "canadacentral"
+}
 
-  route {
-    name           = "AzureAD"
-    address_prefix = "AzureActiveDirectory"
-    next_hop_type  = "Internet"
-  }
-  route {
-    name           = "AzD"
-    address_prefix = "AzureDevOps"
-    next_hop_type  = "Internet"
-  }
-  route {
-    name                   = "Internet"
-    address_prefix         = "0.0.0.0/0"
-    next_hop_type          = "VirtualAppliance"
-    next_hop_in_ip_address = "555.555.555.555" # route through firewall
-  }
+variable "route_table_routes" {
+  type = list(object({
+    name                   = string
+    address_prefix         = string
+    next_hop_type          = string
+    next_hop_in_ip_address = optional(string)
+  }))
+}
 
-  lifecycle {
-    ignore_changes = [route]
-  }
+resource "azurerm_route" "main" {
+  for_each               = { for route in var.route_table_routes : route.name => route }
+  route_table_name       = azurerm_route_table.main.name
+  resource_group_name    = azurerm_route_table.main.resource_group_name
+  name                   = each.value.name
+  address_prefix         = each.value.address_prefix
+  next_hop_type          = each.value.next_hop_type
+  next_hop_in_ip_address = each.value.next_hop_in_ip_address
 }
 
 resource "azurerm_subnet_route_table_association" "main" {

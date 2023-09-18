@@ -15,16 +15,31 @@ spec:
 
   # Only permit applications to deploy to the guestbook namespace in the same cluster
   destinations:
-  {% for app_name, app_data in project.apps.items() %}
-  - namespace: {{app_data.k8s_namespace}}
-    name: in-cluster
-    server: https://kubernetes.default.svc
-  {%- endfor %}
+  {%- if project.name == "cluster-stuff" %}
+    - namespace: "*"
+      name: in-cluster
+      server: https://kubernetes.default.svc
+  {% else %}
+    {%- for namespace in project.apps.values()|map(attribute='k8s_namespace')|unique %}
+    - namespace: {{namespace}}
+      name: in-cluster
+      server: https://kubernetes.default.svc
+    {%- endfor %}
+  {%- endif %}
+
   # Deny all cluster-scoped resources from being created, except for Namespace
   clusterResourceWhitelist:
   - group: ''
     kind: Namespace
 
+{% if project.name == "cluster-stuff" %}
+  clusterResourceWhitelist:
+  - group: "*"
+    kind: "*"
+  namespaceResourceWhitelist:
+  - group: "*"
+    kind: "*"
+  {% else %}
   # Allow all namespaced-scoped resources to be created, except for ResourceQuota, LimitRange, NetworkPolicy
   namespaceResourceBlacklist:
   - group: ''
@@ -33,7 +48,7 @@ spec:
     kind: LimitRange
   - group: ''
     kind: NetworkPolicy
-
+  {%- endif %}
   # # Deny all namespaced-scoped resources from being created, except for Deployment and StatefulSet
   # namespaceResourceWhitelist:
   # - group: 'apps'

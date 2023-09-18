@@ -4,7 +4,6 @@ namespace: argocd
 
 # - https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 resources:
-- namespace.yaml
 - argocd-secret.yaml
 - https://raw.githubusercontent.com/argoproj/argo-cd/v2.7.9/manifests/install.yaml
 

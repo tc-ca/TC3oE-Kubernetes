@@ -8,3 +8,12 @@ metadata:
 ---
 
 {% endfor %}
+
+{%- if project.name == "cluster-stuff" %}
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+  name: default
+{%- endif %}

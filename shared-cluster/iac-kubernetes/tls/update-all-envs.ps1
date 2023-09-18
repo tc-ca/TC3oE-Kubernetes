@@ -41,9 +41,9 @@ Pop-Location
 
 Write-Host "Discovering vaults" -ForegroundColor Cyan
 $vaults = @()
-foreach ($env in $outputs.Keys)
+foreach ($env in $outputs.envs.value.Keys)
 {
-    $uri = $outputs.$env.Values.key_vault_uri
+    $uri = $outputs.envs.value.$env.key_vault_uri
     $result = [regex]::Matches($uri, "://(.*?)\.vault.azure.net/")
     $kv = $result[0].Groups[1]
     Write-Host "Discovered vault $kv"

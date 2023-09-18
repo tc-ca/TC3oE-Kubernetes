@@ -18,7 +18,8 @@ Next, run [`iac-kubernetes/tls/update-all-envs.ps1`](./tls/update-all-envs.ps1) 
 
 ## Repo credentials
 
-ArgoCD uses a personal access token to get READ access on the git repos. This is provided by manually setting the `argocd-personal-access-token` secret in the key vault for the environment.
+ArgoCD uses a personal access token to get READ access on the git repos. This is provided by manually setting the `argocd-personal-access-token` secret in the key vault for the environment.  
+This secret should be created using an admin account with `Code (Read)` permissions.
 
 ## TLS and the Gateway
 

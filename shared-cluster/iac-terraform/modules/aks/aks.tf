@@ -94,6 +94,7 @@ resource "azurerm_kubernetes_cluster" "main" {
   depends_on = [
     azurerm_role_assignment.dnscontrib,
     azurerm_role_assignment.vnet,
-    azurerm_role_assignment.rg
+    azurerm_role_assignment.rg,
+    azurerm_route_table.main
   ]
 }
