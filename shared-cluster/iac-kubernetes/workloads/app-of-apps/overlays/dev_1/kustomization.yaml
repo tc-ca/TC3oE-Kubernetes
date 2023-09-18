@@ -1,0 +1,34 @@
+# THIS FILE IS MANAGED BY AUTOMATION!
+# IF YOU WANT TO MAKE CHANGES, EDIT THE TEMPLATE AND RE-RUN THE AUTOMATION
+# GO TO `iac-kubernetes/manifest_templates.ipynb` TO FIND THE AUTOMATION
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- cluster-stuff/project.yaml
+- cluster-stuff/namespaces.yaml
+- cluster-stuff/namespaces-rbac.yaml
+- cluster-stuff/namespaces-default-sa.yaml
+- cluster-stuff/app-app-of-apps/app-app-of-apps.yaml
+- cluster-stuff/app-app-of-apps/repository.yaml
+- cluster-stuff/app-argocd/app-argocd.yaml
+- cluster-stuff/app-argocd/repository.yaml
+- cluster-stuff/app-azure-monitor-agent/app-azure-monitor-agent.yaml
+- cluster-stuff/app-azure-monitor-agent/repository.yaml
+- cluster-stuff/app-blob-csi-driver/app-blob-csi-driver.yaml
+- cluster-stuff/app-blob-csi-driver/repository.yaml
+- cluster-stuff/app-external-secrets-operator/app-external-secrets-operator.yaml
+- cluster-stuff/app-external-secrets-operator/repository.yaml
+- cluster-stuff/app-ingress-nginx/app-ingress-nginx.yaml
+- cluster-stuff/app-ingress-nginx/repository.yaml
+- cluster-stuff/app-workload-identity-webhook/app-workload-identity-webhook.yaml
+- cluster-stuff/app-workload-identity-webhook/repository.yaml
+- demos/project.yaml
+- demos/namespaces.yaml
+- demos/namespaces-rbac.yaml
+- demos/namespaces-default-sa.yaml
+- demos/app-demo-counter/app-demo-counter.yaml
+- demos/app-demo-counter/repository.yaml
+- demos/app-demo-hello/app-demo-hello.yaml
+- demos/app-demo-hello/repository.yaml
+- demos/app-demo-staticsite/app-demo-staticsite.yaml
+- demos/app-demo-staticsite/repository.yaml

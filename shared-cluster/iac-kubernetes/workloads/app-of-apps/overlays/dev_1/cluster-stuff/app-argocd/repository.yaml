@@ -1,0 +1,33 @@
+# THIS FILE IS MANAGED BY AUTOMATION!
+# IF YOU WANT TO MAKE CHANGES, EDIT THE TEMPLATE AND RE-RUN THE AUTOMATION
+# GO TO `iac-kubernetes/manifest_templates.ipynb` TO FIND THE AUTOMATION
+apiVersion: v1
+kind: Secret
+metadata:
+  name: argocd-repo
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  url: https://git.org.gc.ca/cluster-stuff
+  name: argocd-repo
+  username: dontcare
+  type: git
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: argocd-repo-creds
+  namespace: argocd
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: argocd-secret-store
+    kind: SecretStore # kubernetes/argo/base/secret-store.yaml
+  target:
+    name: argocd-repo
+    creationPolicy: Merge
+  data:
+  - secretKey: password
+    remoteRef:
+      key: argocd-personal-access-token

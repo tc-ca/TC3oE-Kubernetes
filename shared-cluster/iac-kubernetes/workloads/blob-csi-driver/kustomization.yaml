@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+- name: blob-csi-driver
+  repo: https://raw.githubusercontent.com/kubernetes-sigs/blob-csi-driver/master/charts
+  version: v1.18.0
+  namespace: kube-system
+  releaseName: blob-csi-driver
+  valuesInline:
+    controller:
+      replicas: 1
+    node.enableBlobfuseProxy: true
+    cloud: AzureStackCloud

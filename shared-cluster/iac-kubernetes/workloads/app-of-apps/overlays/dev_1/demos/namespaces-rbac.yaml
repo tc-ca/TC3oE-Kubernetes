@@ -1,0 +1,81 @@
+# THIS FILE IS MANAGED BY AUTOMATION!
+# IF YOU WANT TO MAKE CHANGES, EDIT THE TEMPLATE AND RE-RUN THE AUTOMATION
+# GO TO `iac-kubernetes/manifest_templates.ipynb` TO FIND THE AUTOMATION
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-role
+  namespace: demo-counter
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "services", "pods", "configmaps", "secrets", "persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-rolebinding
+  namespace: demo-counter
+subjects:
+- kind: Group
+  name: 555-555-555-555
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: client-role
+  apiGroup: rbac.authorization.k8s.io
+---
+
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-role
+  namespace: demo-hello
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "services", "pods", "configmaps", "secrets", "persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-rolebinding
+  namespace: demo-hello
+subjects:
+- kind: Group
+  name: 555-555-555-555
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: client-role
+  apiGroup: rbac.authorization.k8s.io
+---
+
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-role
+  namespace: demo-staticsite
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "services", "pods", "configmaps", "secrets", "persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-rolebinding
+  namespace: demo-staticsite
+subjects:
+- kind: Group
+  name: 555-555-555-555
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: client-role
+  apiGroup: rbac.authorization.k8s.io
+---
+

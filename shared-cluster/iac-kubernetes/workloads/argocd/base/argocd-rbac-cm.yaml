@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+data:
+  scopes: '[groups,roles]'
+  policy.default: role:none
+  # add cloud operators as admins
+  policy.csv: |
+    g, "555-555-555-555", admin

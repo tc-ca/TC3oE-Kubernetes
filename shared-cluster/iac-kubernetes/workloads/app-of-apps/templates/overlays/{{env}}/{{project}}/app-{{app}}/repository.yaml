@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{app.name}}-repo
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  url: {{app.envs[env.name].source_repo_url}}
+  name: {{app.name}}-repo
+  username: dontcare
+  type: git
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: {{app.name}}-repo-creds
+  namespace: argocd
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: argocd-secret-store
+    kind: SecretStore # kubernetes/argo/base/secret-store.yaml
+  target:
+    name: {{app.name}}-repo
+    creationPolicy: Merge
+  data:
+  - secretKey: password
+    remoteRef:
+      key: argocd-personal-access-token

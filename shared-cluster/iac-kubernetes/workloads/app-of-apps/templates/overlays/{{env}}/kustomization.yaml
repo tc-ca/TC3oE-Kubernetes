@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+{%- for project_name, project_data in projects.items() %}
+- {{project_name}}/project.yaml
+- {{project_name}}/namespaces.yaml
+- {{project_name}}/namespaces-rbac.yaml
+- {{project_name}}/namespaces-default-sa.yaml
+{%- for app_name in project_data.apps.keys() %}
+- {{project_name}}/app-{{app_name}}/app-{{app_name}}.yaml
+- {{project_name}}/app-{{app_name}}/repository.yaml
+{%- endfor %}
+{%- endfor %}

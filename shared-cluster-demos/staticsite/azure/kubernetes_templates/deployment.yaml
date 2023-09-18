@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: staticsite-dep
+  namespace: demo-staticsite
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  selector:
+    matchLabels:
+      app: staticsite-lbl
+  template:
+    metadata:
+      labels:
+        app: staticsite-lbl
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+        - name: staticsite-cont
+          image: nginxinc/nginx-unprivileged:1.24-bullseye-perl
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 8080
+          securityContext: # https://kubernetes.io/docs/concepts/security/pod-security-standards/
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+                - NET_RAW
+            seLinuxOptions:
+              type: container_t
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html
+              name: persistent-storage
+            - mountPath: /tmp
+              name: temp-storage
+            # - name: nginx-conf
+            #   mountPath: /etc/nginx/nginx.conf
+            #   subPath: nginx.conf
+            #   readOnly: true
+      volumes:
+        # https://github.com/kubernetes-sigs/blob-csi-driver/blob/master/deploy/example/e2e_usage.md
+        - name: temp-storage
+          emptyDir: {}
+        - name: persistent-storage
+          csi:
+            driver: blob.csi.azure.com
+            volumeAttributes:
+              containerName: webcontent
+              # https://learn.microsoft.com/en-us/azure/aks/azure-csi-blob-storage-provision?tabs=mount-nfs%2Csecret#static-provisioning-parameters
+              mountOptions: "-o allow_other --file-cache-timeout-in-seconds=120"
+              # https://github.com/kubernetes-sigs/blob-csi-driver/issues/618
+              # https://github.com/Azure/azure-storage-fuse#environment-variables
+              secretName: ${k8s_storage_key_secret_name}
+
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf
+            items:
+              - key: nginx.conf
+                path: nginx.conf

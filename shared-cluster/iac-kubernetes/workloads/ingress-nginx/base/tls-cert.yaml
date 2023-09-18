@@ -1,0 +1,24 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: cluster-ssl
+  namespace: ingress-nginx
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: tls-vault
+    kind: SecretStore
+  target:
+    name: my-ssl-secret
+    template:
+      type: kubernetes.io/tls
+      data:
+        tls.crt: "{{ .cert }}"
+        tls.key: "{{ .key }}"
+  data:
+  - secretKey: cert
+    remoteRef:
+      key: cluster-ssl-cert
+  - secretKey: key
+    remoteRef:
+      key: cluster-ssl-key

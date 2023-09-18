@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-dep
+  namespace: demo-hello
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-lbl
+  template:
+    metadata:
+      labels:
+        app: hello-lbl
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+        - name: hello-cont
+          image: nginxinc/nginx-unprivileged:1.24-bullseye-perl
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 8080
+          securityContext: # https://kubernetes.io/docs/concepts/security/pod-security-standards/
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+                - NET_RAW
+            seLinuxOptions:
+              type: container_t
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /tmp
+              name: temp-storage
+      volumes:
+        - name: temp-storage
+          emptyDir: {}

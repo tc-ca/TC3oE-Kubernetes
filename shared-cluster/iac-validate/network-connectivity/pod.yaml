@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: investigation
+spec:
+  containers:
+  # https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/basic-troubleshooting-outbound-connections#check-whether-the-dns-resolution-is-successful-for-the-endpoint
+  # This image has some networking tools baked in, but will also complain about certificates since it's kinda old
+  # - image: rishasi/ubuntu-netutil:1.0
+  - image: alpine
+    name: investigation
+    resources: {}
+    command:
+      - /bin/sh
+      - -c
+      - sleep infinity
+    securityContext: # https://kubernetes.io/docs/concepts/security/pod-security-standards/
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 1001
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+          - NET_RAW
+      seLinuxOptions:
+        type: container_t
+      seccompProfile:
+        type: RuntimeDefault

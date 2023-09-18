@@ -1,0 +1,23 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - counter/app
+
+
+pool:
+  vmImage: ubuntu-22.04
+
+steps:
+- task: Docker@2
+  displayName: Build and Push
+  inputs:
+    command: buildAndPush
+    containerRegistry: my-service-connection
+    repository: cloud/counter-demo
+    Dockerfile: counter/app/Dockerfile
+    tags: |
+      latest
+      $(Build.BuildNumber)

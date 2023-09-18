@@ -1,0 +1,9 @@
+{% for namespace in project.apps.values()|map(attribute='k8s_namespace')|unique %}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+  namespace: {{namespace}}
+automountServiceAccountToken: false
+---
+{% endfor %}

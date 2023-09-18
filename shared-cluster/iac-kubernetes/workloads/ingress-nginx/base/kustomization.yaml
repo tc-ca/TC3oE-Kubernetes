@@ -1,0 +1,58 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# - https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
+
+resources:
+- namespace.yaml
+- tls-cert.yaml
+
+helmCharts:
+- includeCRDs: true
+  name: ingress-nginx
+  namespace: ingress-nginx
+  releaseName: ingress-nginx
+  repo: https://kubernetes.github.io/ingress-nginx
+  version: 4.7.0
+  valuesMerge: override
+  valuesInline:
+    controller:
+      containerSecurityContext:
+        # https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/templates/controller-deployment.yaml#L89
+        # https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/templates/_helpers.tpl#L35
+        allowPrivilegeEscalation: false
+
+        # we don't want to change the user because it causes permission issues
+        # https://stackoverflow.com/a/59765667/11141271
+        # runAsUser: 1001
+
+        capabilities:
+          add:
+          - NET_BIND_SERVICE
+          drop:
+          - ALL
+        seccompProfile:
+          type: RuntimeDefault
+      config:
+        #fix 502 error when user has large claims response when logging into argocd
+        #https://www.cyberciti.biz/faq/nginx-upstream-sent-too-big-header-while-reading-response-header-from-upstream/
+        proxy-buffer-size: 512k
+        proxy-buffers-number: 4
+      containerPort:
+        http: 8080
+        https: 8081
+      extraArgs:
+        default-ssl-certificate: ingress-nginx/my-ssl-secret
+        enable-ssl-passthrough: ""
+        http-port: 8080
+        https-port: 8081
+      service:
+        annotations:
+          service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: /healthz
+          service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+      watchIngressWithoutClass: true
+    fullnameOverride: ingress-nginx
+    ingress:
+      extra_args:
+        enable-ssl-passthrough: true
+

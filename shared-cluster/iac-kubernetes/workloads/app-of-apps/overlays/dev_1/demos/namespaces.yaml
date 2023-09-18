@@ -1,0 +1,30 @@
+# THIS FILE IS MANAGED BY AUTOMATION!
+# IF YOU WANT TO MAKE CHANGES, EDIT THE TEMPLATE AND RE-RUN THE AUTOMATION
+# GO TO `iac-kubernetes/manifest_templates.ipynb` TO FIND THE AUTOMATION
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+  name: demo-counter
+---
+
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+  name: demo-hello
+---
+
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+  name: demo-staticsite
+---
+

@@ -1,0 +1,56 @@
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{project.name}}
+  namespace: argocd
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  # finalizers:
+  #   - resources-finalizer.argocd.argoproj.io
+spec:
+  description: {{project.description}}
+
+  sourceRepos:
+  - "*" # allow all repositories
+
+  # Only permit applications to deploy to the guestbook namespace in the same cluster
+  destinations:
+  {% for app_name, app_data in project.apps.items() %}
+  - namespace: {{app_data.k8s_namespace}}
+    name: in-cluster
+    server: https://kubernetes.default.svc
+  {%- endfor %}
+  # Deny all cluster-scoped resources from being created, except for Namespace
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+
+  # Allow all namespaced-scoped resources to be created, except for ResourceQuota, LimitRange, NetworkPolicy
+  namespaceResourceBlacklist:
+  - group: ''
+    kind: ResourceQuota
+  - group: ''
+    kind: LimitRange
+  - group: ''
+    kind: NetworkPolicy
+
+  # # Deny all namespaced-scoped resources from being created, except for Deployment and StatefulSet
+  # namespaceResourceWhitelist:
+  # - group: 'apps'
+  #   kind: Deployment
+  # - group: 'apps'
+  #   kind: StatefulSet
+
+  # Enables namespace orphaned resource monitoring.
+  orphanedResources:
+    warn: false
+
+  roles:
+  - name: member
+    groups:
+    - {{project.security_group_id}}
+    policies:
+    {% for app_name, app in project.apps.items() %}
+    - p, proj:{{project.name}}:member, applications, get, {{app_name}}/*, allow
+    - p, proj:{{project.name}}:member, applications, sync, {{app_name}}/*, allow
+    {%- endfor %}

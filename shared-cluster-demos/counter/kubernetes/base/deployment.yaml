@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: counter-dep
+  namespace: demo-counter
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: counter-lbl
+  template:
+    metadata:
+      labels:
+        app: counter-lbl
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+        - name: counter-cont
+          # image: mcr.microsoft.com/azuredocs/azure-vote-front:v1
+          # image: nginx:latest
+          image: mycontainerregistry.azurecr.io/cloud/counter-demo:20230719.4
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          ports:
+            - containerPort: 80
+          securityContext: # https://kubernetes.io/docs/concepts/security/pod-security-standards/
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+                - NET_RAW
+            seLinuxOptions:
+              type: container_t
+            seccompProfile:
+              type: RuntimeDefault

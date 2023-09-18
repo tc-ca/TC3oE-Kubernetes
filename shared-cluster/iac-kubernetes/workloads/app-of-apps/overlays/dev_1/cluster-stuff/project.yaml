@@ -1,0 +1,87 @@
+# THIS FILE IS MANAGED BY AUTOMATION!
+# IF YOU WANT TO MAKE CHANGES, EDIT THE TEMPLATE AND RE-RUN THE AUTOMATION
+# GO TO `iac-kubernetes/manifest_templates.ipynb` TO FIND THE AUTOMATION
+# https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cluster-stuff
+  namespace: argocd
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  # finalizers:
+  #   - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Core cluster workloads
+
+  sourceRepos:
+  - "*" # allow all repositories
+
+  # Only permit applications to deploy to the guestbook namespace in the same cluster
+  destinations:
+  
+  - namespace: argocd
+    name: in-cluster
+    server: https://kubernetes.default.svc
+  - namespace: argocd
+    name: in-cluster
+    server: https://kubernetes.default.svc
+  - namespace: kube-system
+    name: in-cluster
+    server: https://kubernetes.default.svc
+  - namespace: kube-system
+    name: in-cluster
+    server: https://kubernetes.default.svc
+  - namespace: external-secrets
+    name: in-cluster
+    server: https://kubernetes.default.svc
+  - namespace: ingress-nginx
+    name: in-cluster
+    server: https://kubernetes.default.svc
+  - namespace: azure-workload-identity-system
+    name: in-cluster
+    server: https://kubernetes.default.svc
+  # Deny all cluster-scoped resources from being created, except for Namespace
+  clusterResourceWhitelist:
+  - group: ''
+    kind: Namespace
+
+  # Allow all namespaced-scoped resources to be created, except for ResourceQuota, LimitRange, NetworkPolicy
+  namespaceResourceBlacklist:
+  - group: ''
+    kind: ResourceQuota
+  - group: ''
+    kind: LimitRange
+  - group: ''
+    kind: NetworkPolicy
+
+  # # Deny all namespaced-scoped resources from being created, except for Deployment and StatefulSet
+  # namespaceResourceWhitelist:
+  # - group: 'apps'
+  #   kind: Deployment
+  # - group: 'apps'
+  #   kind: StatefulSet
+
+  # Enables namespace orphaned resource monitoring.
+  orphanedResources:
+    warn: false
+
+  roles:
+  - name: member
+    groups:
+    - 555-555-555-555
+    policies:
+    
+    - p, proj:cluster-stuff:member, applications, get, app-of-apps/*, allow
+    - p, proj:cluster-stuff:member, applications, sync, app-of-apps/*, allow
+    - p, proj:cluster-stuff:member, applications, get, argocd/*, allow
+    - p, proj:cluster-stuff:member, applications, sync, argocd/*, allow
+    - p, proj:cluster-stuff:member, applications, get, azure-monitor-agent/*, allow
+    - p, proj:cluster-stuff:member, applications, sync, azure-monitor-agent/*, allow
+    - p, proj:cluster-stuff:member, applications, get, blob-csi-driver/*, allow
+    - p, proj:cluster-stuff:member, applications, sync, blob-csi-driver/*, allow
+    - p, proj:cluster-stuff:member, applications, get, external-secrets-operator/*, allow
+    - p, proj:cluster-stuff:member, applications, sync, external-secrets-operator/*, allow
+    - p, proj:cluster-stuff:member, applications, get, ingress-nginx/*, allow
+    - p, proj:cluster-stuff:member, applications, sync, ingress-nginx/*, allow
+    - p, proj:cluster-stuff:member, applications, get, workload-identity-webhook/*, allow
+    - p, proj:cluster-stuff:member, applications, sync, workload-identity-webhook/*, allow

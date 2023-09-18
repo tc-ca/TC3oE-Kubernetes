@@ -1,0 +1,133 @@
+# THIS FILE IS MANAGED BY AUTOMATION!
+# IF YOU WANT TO MAKE CHANGES, EDIT THE TEMPLATE AND RE-RUN THE AUTOMATION
+# GO TO `iac-kubernetes/manifest_templates.ipynb` TO FIND THE AUTOMATION
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-role
+  namespace: argocd
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "services", "pods", "configmaps", "secrets", "persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-rolebinding
+  namespace: argocd
+subjects:
+- kind: Group
+  name: 555-555-555-555
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: client-role
+  apiGroup: rbac.authorization.k8s.io
+---
+
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-role
+  namespace: kube-system
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "services", "pods", "configmaps", "secrets", "persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-rolebinding
+  namespace: kube-system
+subjects:
+- kind: Group
+  name: 555-555-555-555
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: client-role
+  apiGroup: rbac.authorization.k8s.io
+---
+
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-role
+  namespace: external-secrets
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "services", "pods", "configmaps", "secrets", "persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-rolebinding
+  namespace: external-secrets
+subjects:
+- kind: Group
+  name: 555-555-555-555
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: client-role
+  apiGroup: rbac.authorization.k8s.io
+---
+
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-role
+  namespace: ingress-nginx
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "services", "pods", "configmaps", "secrets", "persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-rolebinding
+  namespace: ingress-nginx
+subjects:
+- kind: Group
+  name: 555-555-555-555
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: client-role
+  apiGroup: rbac.authorization.k8s.io
+---
+
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-role
+  namespace: azure-workload-identity-system
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "services", "pods", "configmaps", "secrets", "persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-rolebinding
+  namespace: azure-workload-identity-system
+subjects:
+- kind: Group
+  name: 555-555-555-555
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: client-role
+  apiGroup: rbac.authorization.k8s.io
+---
+

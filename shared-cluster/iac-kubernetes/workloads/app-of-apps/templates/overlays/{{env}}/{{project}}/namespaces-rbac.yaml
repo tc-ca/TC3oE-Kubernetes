@@ -1,0 +1,27 @@
+{% for namespace in project.apps.values()|map(attribute='k8s_namespace')|unique %}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-role
+  namespace: {{namespace}}
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["deployments", "services", "pods", "configmaps", "secrets", "persistentvolumeclaims"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: client-rolebinding
+  namespace: {{namespace}}
+subjects:
+- kind: Group
+  name: {{project.security_group_id}}
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: client-role
+  apiGroup: rbac.authorization.k8s.io
+---
+
+{% endfor %}

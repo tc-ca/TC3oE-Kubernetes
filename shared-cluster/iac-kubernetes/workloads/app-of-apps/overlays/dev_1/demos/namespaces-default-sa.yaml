@@ -1,0 +1,27 @@
+# THIS FILE IS MANAGED BY AUTOMATION!
+# IF YOU WANT TO MAKE CHANGES, EDIT THE TEMPLATE AND RE-RUN THE AUTOMATION
+# GO TO `iac-kubernetes/manifest_templates.ipynb` TO FIND THE AUTOMATION
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+  namespace: demo-counter
+automountServiceAccountToken: false
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+  namespace: demo-hello
+automountServiceAccountToken: false
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+  namespace: demo-staticsite
+automountServiceAccountToken: false
+---

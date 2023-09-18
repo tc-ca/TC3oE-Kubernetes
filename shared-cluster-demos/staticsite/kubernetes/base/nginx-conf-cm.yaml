@@ -1,0 +1,22 @@
+# https://stackoverflow.com/questions/60988056/kubernetes-nginx-config-read-only-file-system
+# https://stackoverflow.com/questions/55477337/why-i-am-getting-read-only-file-system-error-from-nginx
+# https://stackoverflow.com/questions/64178370/custom-nginx-conf-from-configmap-in-kubernetes
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-conf
+  namespace: demo-staticsite
+data:
+  nginx.conf: |
+    worker_processes  1;
+    events {
+      worker_connections 10240;
+    }
+    http {
+      # Turn off the bloody buffering to temp files
+      proxy_buffering off;
+      server {
+          listen 0.0.0.0:8080;
+      }
+    }

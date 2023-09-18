@@ -1,0 +1,21 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Counter app</h1>
+    @if(Model.Bump){
+    <p>Bumped!</p>
+    <p>Hitting F5 on your browser may cause a re-submit, use the reload button below to be safe.</p>
+    }
+    <p>Count: @Model.Count</p>
+    <form method="POST" asp-page-handler="Increase">
+        <button type="submit">Increase</button>
+    </form>
+    <form method="POST" asp-page-handler="Reset">
+        <button type="submit">Reset</button>
+    </form>
+    <a asp-page="Index">Reload</a>
+</div>

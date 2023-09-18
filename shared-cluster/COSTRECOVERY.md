@@ -1,0 +1,1 @@
+KubeCost is paid, we should be looking at https://www.opencost.io/

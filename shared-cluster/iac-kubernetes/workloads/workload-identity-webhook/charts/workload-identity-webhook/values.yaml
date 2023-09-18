@@ -1,0 +1,38 @@
+# Default values for workload-identity-webhook.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+labels:
+  azure-workload-identity.io/system: "true"
+replicaCount: 2
+image:
+  repository: mcr.microsoft.com/oss/azure/workload-identity/webhook
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  release: v0.14.0
+imagePullSecrets: []
+nodeSelector:
+  kubernetes.io/os: linux
+arcCluster: false
+resources:
+  limits:
+    cpu: 100m
+    memory: 30Mi
+  requests:
+    cpu: 100m
+    memory: 20Mi
+tolerations: []
+affinity: {}
+service:
+  type: ClusterIP
+  port: 443
+  targetPort: 9443
+azureEnvironment: AzurePublicCloud
+azureTenantID:
+logEncoder: console
+metricsAddr: ":8095"
+metricsBackend: prometheus
+mutatingWebhookFailurePolicy: Ignore
+priorityClassName: system-cluster-critical
+mutatingWebhookObjectSelector: {}
+mutatingWebhookAnnotations: {}
